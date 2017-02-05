@@ -14,3 +14,8 @@ length' xs = sum [1 | _ <- xs]
 removeNonUpperCase str = [c | c <- str, c `elem` ['A'..'Z']]
 
 rightTriangls maxSide permiter = [(a,b,c) | c <- [1..maxSide], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2, a+b+c == permiter]
+
+fun x y = (x, y)
+
+tenDividedBy :: (Floating a) => a -> a
+tenDividedBy = (10/)
