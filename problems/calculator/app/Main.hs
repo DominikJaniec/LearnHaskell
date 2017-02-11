@@ -5,5 +5,6 @@ import ArgsParser
 
 main :: IO ()
 main = do
+    appName <- getProgName
     rawArgs <- getArgs
-    putStrLn $ dumpArgs rawArgs
+    putStrLn $ dump appName rawArgs

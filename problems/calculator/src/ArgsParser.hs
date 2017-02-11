@@ -1,5 +1,5 @@
 module ArgsParser
-    ( dumpArgs
+    ( dump
     ) where
 
 data Args = Args
@@ -10,9 +10,10 @@ data Args = Args
 parseArgs :: [String] -> Args
 parseArgs xs = Args { notation = "RPN", expressions = xs }
 
-dumpArgs :: [String] -> String
-dumpArgs args = let
+dump :: String -> [String] -> String
+dump name args = let
+    header name args = "The '" ++ name ++ "' executed with " ++ (show $ length args) ++ " arguments:"
     line n str = "  " ++ (show n) ++ ". " ++ str
     enhance _ [] = []
     enhance n (x:xs) = (line n x) : (enhance (n+1) xs)
-    in unlines $ "Arguments are:" : enhance 1 args
+    in unlines $ (header name args) : (enhance 1 args)
