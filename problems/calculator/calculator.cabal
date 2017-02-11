@@ -2,8 +2,8 @@ name:                calculator
 version:             0.1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/DominikJaniec/calculator#readme
-license:             BSD3
+homepage:            https://github.com/DominikJaniec/LearnHaskell/tree/master/problems/calculator#readme
+license:             MIT
 license-file:        LICENSE
 author:              Dominik Janiec
 maintainer:          dominikjaniec@gmail.com
@@ -38,4 +38,4 @@ test-suite calculator-test
 
 source-repository head
   type:     git
-  location: https://github.com/DominikJaniec/calculator
+  location: https://github.com/DominikJaniec/LearnHaskell
