@@ -1,6 +1,9 @@
 module Main where
 
-import Lib
+import System.Environment
+import ArgsParser
 
 main :: IO ()
-main = someFunc
+main = do
+    rawArgs <- getArgs
+    putStrLn $ dumpArgs rawArgs
