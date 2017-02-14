@@ -1,14 +1,34 @@
 module ArgsParser
-    ( dump
+    ( Args(..)
+    , parseArgs
+    , help
+    , dump
     ) where
+
+import Data.List
 
 data Args = Args
     { notation :: String
     , expressions :: [String]
-    } deriving (Show)
+    } deriving (Eq, Show)
 
-parseArgs :: [String] -> Args
-parseArgs xs = Args { notation = "RPN", expressions = xs }
+help = unlines
+    [ "Incorrect execution parameters:"
+    , "  $ calculator -n:SAMPLE expr1 [expr2..n]"
+    , ""
+    , "    -n:SAMPLE        - where {SAMPLE} is Mathematical Notation key"
+    , "    expr1 [expr2..n] - list of expressions in given Notation to calculate"
+    ]
+
+parseArgs :: [String] -> Either String Args
+parseArgs [] = Left help
+parseArgs [_] = Left help
+parseArgs xs = case getNotation xs of
+    Nothing -> Left help
+    Just ntn -> Right $ buildArgs ntn xs
+    where
+        getNotation args = stripPrefix "-n:" $ head args
+        buildArgs ntn xs = Args { notation = ntn, expressions = tail xs }
 
 dump :: String -> [String] -> String
 dump name args = let
