@@ -7,4 +7,8 @@ import Notation
 data ReversePolishNotation = ReversePolishNotation
 instance Notation ReversePolishNotation where
     notationKey ntn = "RPN"
-    calculator ntn = (\expr -> fromIntegral $ read expr)
+    calculator ntn = parse
+
+parse :: String -> Double
+parse ('.':xs) = parse $ "0." ++ xs
+parse x = read x

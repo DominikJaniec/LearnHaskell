@@ -7,10 +7,10 @@ module Notation
 
 class Notation a where
     notationKey :: a -> String
-    calculator :: (Num r) => a -> (String -> r)
+    calculator :: a -> (String -> Double)
 
-calculate :: (Notation a, Num r) => a -> [String] -> [r]
+calculate :: (Notation a) => a -> [String] -> [Double]
 calculate ntn expressions = map (compute ntn) expressions
 
-compute :: (Notation a, Num r) => a -> String -> r
+compute :: (Notation a) => a -> String -> Double
 compute ntn expression = calculator ntn expression
