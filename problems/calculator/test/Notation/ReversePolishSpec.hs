@@ -12,3 +12,7 @@ spec = do
   describe "notationKey" $ do
     it "returns correct RPN key for Reverse Polish notation" $ do
       notationKey ReversePolishNotation `shouldBe` "RPN"
+
+  describe "compute" $ do
+    it "preserves constant value" $ do
+      compute ReversePolishNotation "42" `shouldBe` 42
