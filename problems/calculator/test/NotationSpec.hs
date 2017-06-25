@@ -3,6 +3,7 @@ module NotationSpec (main, spec) where
 import Test.Hspec
 import Notation
 
+
 main :: IO ()
 main = hspec spec
 
@@ -10,7 +11,7 @@ main = hspec spec
 data TestNtn = TestNtn
 instance Notation TestNtn where
     notationKey ntn = "TestNotation"
-    calculator ntn = (\str -> fromIntegral $ length str)
+    calculator ntn = fromIntegral . length
 
 spec :: Spec
 spec = do

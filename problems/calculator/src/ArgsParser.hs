@@ -7,11 +7,13 @@ module ArgsParser
 
 import Data.List
 
+
 data Args = Args
     { notation :: String
     , expressions :: [String]
     } deriving (Eq, Show)
 
+help :: String
 help = unlines
     [ "Incorrect execution parameters:"
     , "  $ calculator -n:SAMPLE expr1 [expr2..n]"
@@ -32,8 +34,8 @@ parseArgs xs = case getNotation xs of
 
 dump :: String -> [String] -> String
 dump name args = let
-    header name args = "The '" ++ name ++ "' executed with " ++ (show $ length args) ++ " arguments:"
-    line n str = "  " ++ (show n) ++ ". " ++ str
+    header = "The '" ++ name ++ "' executed with " ++ show (length args) ++ " arguments:"
+    line n str = "  " ++ show n ++ ". " ++ str
     enhance _ [] = []
-    enhance n (x:xs) = (line n x) : (enhance (n+1) xs)
-    in unlines $ (header name args) : (enhance 1 args)
+    enhance n (x:xs) = line n x : enhance (n + 1) xs
+    in unlines $ header : enhance 1 args

@@ -4,6 +4,7 @@ module Tools.BlankChopper
     , chopTokens
     ) where
 
+
 data Token = Token
     { content :: String
     , index :: Int

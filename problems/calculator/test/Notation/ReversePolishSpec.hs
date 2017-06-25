@@ -4,6 +4,7 @@ import Test.Hspec
 import Notation
 import Notation.ReversePolish
 
+
 main :: IO ()
 main = hspec spec
 
@@ -44,6 +45,6 @@ spec = do
 itAssertComputeSpecSamples specs = mapM_ itAssertCompute specs
 
 itAssertCompute (input, result) = let
-    computeHeader i r = "computes: " ++ (show r) ++ ", for an input: '" ++ i ++ "'"
+    computeHeader i r = "computes: " ++ show r ++ ", for an input: '" ++ i ++ "'"
     assertCompute i r = compute ReversePolishNotation i `shouldBe` r
   in it (computeHeader input result) $ do assertCompute input result

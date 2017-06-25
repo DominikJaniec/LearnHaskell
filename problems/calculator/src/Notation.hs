@@ -10,7 +10,7 @@ class Notation a where
     calculator :: a -> (String -> Double)
 
 calculate :: (Notation a) => a -> [String] -> [Double]
-calculate ntn expressions = map (compute ntn) expressions
+calculate ntn = map (compute ntn)
 
 compute :: (Notation a) => a -> String -> Double
-compute ntn expression = calculator ntn expression
+compute = calculator

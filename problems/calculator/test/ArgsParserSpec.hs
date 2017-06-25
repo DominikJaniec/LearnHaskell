@@ -4,6 +4,7 @@ import Data.List
 import Test.Hspec
 import ArgsParser
 
+
 main :: IO ()
 main = hspec spec
 
@@ -38,4 +39,4 @@ spec = do
       dump "program name" ["some", "arguments"] `shouldSatisfy` not . null
 
     it "contains program name in first line" $ do
-      dump "AppName.exe" [] `shouldSatisfy` (\x -> "AppName.exe" `isInfixOf` ((head . lines) x))
+      dump "AppName.exe" [] `shouldSatisfy` (\x -> "AppName.exe" `isInfixOf` (head . lines) x)

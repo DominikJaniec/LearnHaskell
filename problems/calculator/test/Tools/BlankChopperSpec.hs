@@ -3,6 +3,7 @@ module Tools.BlankChopperSpec (main, spec) where
 import Test.Hspec
 import Tools.BlankChopper
 
+
 main :: IO ()
 main = hspec spec
 

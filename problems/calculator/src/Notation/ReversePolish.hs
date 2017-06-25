@@ -4,6 +4,7 @@ module Notation.ReversePolish
 
 import Notation
 
+
 data ReversePolishNotation = ReversePolishNotation
 instance Notation ReversePolishNotation where
     notationKey ntn = "RPN"
