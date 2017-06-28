@@ -11,7 +11,7 @@ spec :: Spec
 spec = do
   describe "chop" $ do
     context "breaks on spaces" $ do
-      itAssertChopSpecSamples
+      itChopsAsSpecSamples
         [ ("x y", ["x", "y"])
         , ("a    b", ["a", "b"])
         , ("  m n   ", ["m", "n"])
@@ -22,7 +22,7 @@ spec = do
         ]
 
     context "breaks on tabs" $ do
-      itAssertChopSpecSamples
+      itChopsAsSpecSamples
         [ ("t\tt", ["t", "t"])
         , ("q\t\t\ty", ["q", "y"])
         , ("\ttabs\tevery\twhere\t", ["tabs", "every", "where"])
@@ -32,15 +32,14 @@ spec = do
         ]
 
     context "breaks on new lines" $ do
-      itAssertChopSpecSamples
+      itChopsAsSpecSamples
         [ ("1\n2", ["1", "2"])
         , ("\n4\n3\n2\n1\n", ["4", "3", "2", "1"])
         , ("\n\n\n\nmagic\n\n\nnumber\n\n\n\nseven\n\n", ["magic", "number", "seven"])
         ]
 
-itAssertChopSpecSamples specs = mapM_ itAssertChop specs
-
-itAssertChop (input, result) = let
+itChopsAsSpecSamples specs = mapM_ itChops specs
+itChops (input, result) = let
     chopHeader i r = "choped as: " ++ show r ++ ", for an input: '" ++ i ++ "'"
     assertChop i r = chop i `shouldBe` r
   in it (chopHeader input result) $ do assertChop input result
