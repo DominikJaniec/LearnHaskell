@@ -1,5 +1,5 @@
 module Tools.BlankChopper
-    ( Token
+    ( Token(..)
     , chop
     , chopTokens
     ) where

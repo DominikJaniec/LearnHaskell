@@ -6,6 +6,7 @@ module Notation.ReversePolish
     , calculateResult
     ) where
 
+import Text.Read
 import Notation
 import Tools.BlankChopper
 
@@ -31,4 +32,41 @@ data ErrorKind = ErrorUndefined
     deriving (Eq, Show)
 
 calculateResult :: String -> CalcResult
-calculateResult input = Left ErrorInfo { errorKind = ErrorEmptyInput, inputIndex = 0 }
+calculateResult input =
+    case chopTokens input of
+        [] -> makeErrorEmptyInput input
+        [value] -> handleSingle value
+        tokens -> handleTokens tokens
+
+
+makeErrorEmptyInput :: String -> CalcResult
+makeErrorEmptyInput input =
+    Left ErrorInfo
+    { errorKind = ErrorEmptyInput
+    , inputIndex = length input
+    }
+
+makeErrorUnknownSymbolAt :: Int -> CalcResult
+makeErrorUnknownSymbolAt tokenIndex =
+    Left ErrorInfo
+    { errorKind = ErrorUnknownSymbol
+    , inputIndex = tokenIndex
+    }
+
+
+handleSingle :: Token -> CalcResult
+handleSingle token =
+    case parseNumber token of
+        Nothing -> makeErrorUnknownSymbolAt 0
+        Just parsedNumber -> Right parsedNumber
+
+handleTokens :: [Token] -> CalcResult
+handleTokens tokens = makeErrorUnknownSymbolAt 0
+
+
+parseNumber :: Token -> Maybe Double
+parseNumber token =
+    let correct ('.':xs) = "0." ++ xs
+        correct value = value
+        tokenValue = correct . content
+    in readMaybe $ tokenValue token
