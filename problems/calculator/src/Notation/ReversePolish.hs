@@ -9,6 +9,7 @@ module Notation.ReversePolish
 import Text.Read
 import Notation
 import Tools.BlankChopper
+import Tools.Cruncher
 
 
 data ReversePolishNotation = ReversePolishNotation
@@ -23,46 +24,69 @@ type CalcResult = Either ErrorInfo Double
 
 data ErrorInfo = ErrorInfo
     { errorKind :: ErrorKind
-    , inputIndex :: Int
+    , errorDetails :: Maybe String
+    , inputIndex :: Maybe Int
     } deriving (Eq, Show)
 
 data ErrorKind = ErrorUndefined
     | ErrorEmptyInput
+    | ErrorUncomputable
     | ErrorUnknownSymbol
     deriving (Eq, Show)
 
 calculateResult :: String -> CalcResult
 calculateResult input =
     case chopTokens input of
-        [] -> makeErrorEmptyInput input
-        [value] -> handleSingle value
+        [] -> Left $ makeErrorEmptyInputFrom input
+        [value] -> handleSingleToken value
         tokens -> handleTokens tokens
 
 
-makeErrorEmptyInput :: String -> CalcResult
-makeErrorEmptyInput input =
-    Left ErrorInfo
+makeErrorEmptyInputFrom :: String -> ErrorInfo
+makeErrorEmptyInputFrom input = ErrorInfo
     { errorKind = ErrorEmptyInput
-    , inputIndex = length input
+    , errorDetails = Nothing
+    , inputIndex = Just $ length input
     }
 
-makeErrorUnknownSymbolAt :: Int -> CalcResult
-makeErrorUnknownSymbolAt tokenIndex =
-    Left ErrorInfo
+makeErrorUncomputableWith :: Maybe String -> ErrorInfo
+makeErrorUncomputableWith moreDetails = ErrorInfo
+    { errorKind = ErrorUncomputable
+    , errorDetails = moreDetails
+    , inputIndex = Nothing
+    }
+
+makeErrorUnknownSymbol :: Token -> String -> ErrorInfo
+makeErrorUnknownSymbol token details = ErrorInfo
     { errorKind = ErrorUnknownSymbol
-    , inputIndex = tokenIndex
+    , errorDetails = Just details
+    , inputIndex = Just $ index token
     }
 
 
-handleSingle :: Token -> CalcResult
-handleSingle token =
+handleSingleToken :: Token -> CalcResult
+handleSingleToken token =
     case parseNumber token of
-        Nothing -> makeErrorUnknownSymbolAt 0
         Just parsedNumber -> Right parsedNumber
+        Nothing -> Left $ makeErrorUnknownSymbol token message
+            where message = "Could not parse '" ++ show (content token) ++ "' as Number."
 
 handleTokens :: [Token] -> CalcResult
-handleTokens tokens = makeErrorUnknownSymbolAt 0
+handleTokens tokens =
+    let initialState = Right []
+        crunchTokens state token = case state of
+            Right values -> crunchToken values token
+            Left _ -> state
+        toResult state = case state of
+            Right [value] -> Right value
+            Left errorInfo -> Left errorInfo
+            Right values -> Left $ makeErrorUncomputableWith $ Just message
+                where message = "Solution do not have a single result. Left with: " ++ show values
+    in toResult $ foldl crunchTokens initialState tokens
 
+
+type ValueStack = [Double]
+type CrunchingState = Either ErrorInfo ValueStack
 
 parseNumber :: Token -> Maybe Double
 parseNumber token =
@@ -70,3 +94,17 @@ parseNumber token =
         correct value = value
         tokenValue = correct . content
     in readMaybe $ tokenValue token
+
+crunchToken :: ValueStack -> Token -> CrunchingState
+crunchToken values token =
+    case parseNumber token of
+        Just parsedNumber -> Right $ parsedNumber:values
+        Nothing -> crunchSymbolFrom token values
+
+crunchSymbolFrom :: Token -> ValueStack -> CrunchingState
+crunchSymbolFrom token values =
+    let crunchWith (info, method) = Right values
+    in case cruncherFor token of
+        Just cruncher -> crunchWith cruncher
+        Nothing -> Left $ makeErrorUnknownSymbol token message
+            where message = "Could not find known implementation for a symbol: '" ++ content token ++ "'."
