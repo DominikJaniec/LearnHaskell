@@ -41,6 +41,7 @@ test-suite calculator-test
                      , NotationSpec
                      , Notation.ReversePolishSpec
                      , Tools.BlankChopperSpec
+                     , Tools.CruncherSpec
   build-depends:       base
                      , hspec
                      , calculator
