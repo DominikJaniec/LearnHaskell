@@ -1,6 +1,6 @@
 module ArgsParserSpec (main, spec) where
 
-import Data.List
+import qualified Data.List as List
 import Test.Hspec
 import ArgsParser
 
@@ -12,7 +12,7 @@ spec = do
 
   describe "help" $ do
     it "contains correct execution command line" $ do
-      help `shouldSatisfy` ("calculator -n:SAMPLE expr1 [expr2..n]" `isInfixOf`)
+      help `shouldSatisfy` ("calculator -n:SAMPLE expr1 [expr2..n]" `List.isInfixOf`)
 
 
   describe "parseArgs" $ do
@@ -38,4 +38,4 @@ spec = do
       dump "program name" ["some", "arguments"] `shouldSatisfy` not . null
 
     it "contains program name in first line" $ do
-      dump "AppName.exe" [] `shouldSatisfy` (\x -> "AppName.exe" `isInfixOf` ((head . lines) x))
+      dump "AppName.exe" [] `shouldSatisfy` (\x -> "AppName.exe" `List.isInfixOf` ((head . lines) x))
